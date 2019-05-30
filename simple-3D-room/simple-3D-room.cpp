@@ -18,15 +18,20 @@ struct
 	double y = 0.5;
 	double z = -10;
 	int rotate = 0; // 0-359
-	int rotateSpeed = 10;
-	const double eyesight = 1;
+	const int rotateSpeed = 10;
 	const double step = 0.5;
+	const struct{
+		const double verticalRange = 120;
+		const double aspectRatio = 1;
+		const double nearDistance = 0.5;
+		const double farDistance = 100;
+	} eye;
 } player;
 
 // room, start from (0, 0, 0), end at (room.size.x, room.size.y, room.size.z)
 const struct
 {
-	double size = 3;
+	const double size = 3;
 } room;
 
 double radians(double degree)
@@ -47,9 +52,9 @@ void render()
 			player.x,
 			player.y,
 			player.z,
-			player.x + sin(radians(player.rotate)) * player.eyesight,
+			player.x + sin(radians(player.rotate)),
 			player.y,
-			player.z + cos(radians(player.rotate)) * player.eyesight,
+			player.z + cos(radians(player.rotate)),
 			0, 1, 0);
 
 	// glutSolidCube(room.size);
@@ -136,7 +141,7 @@ void reshape(int w, int h)
 	// set projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(120, 1, 1.5, 100);
+	gluPerspective(player.eye.verticalRange, player.eye.aspectRatio, player.eye.nearDistance, player.eye.farDistance);
 
 	// set matrix mode back to model-view matrix
 	glMatrixMode(GL_MODELVIEW);
