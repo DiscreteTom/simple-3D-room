@@ -20,7 +20,7 @@ void render()
 // setup rendering context
 void setupRC()
 {
-	glClearColor(255, 255, 255, 1); // white background
+	glClearColor(1, 1, 1, 1); // white background
 }
 
 // keyboard callback function(for ascii chars)
