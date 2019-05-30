@@ -25,7 +25,7 @@ void setupRC()
 
 // keyboard callback function(for ascii chars)
 // x and y are the coordinates of mouse when key is pressed
-void keyPressedEvent(char key, int x, int y)
+void keyPressedEvent(unsigned char key, int x, int y)
 {
 	// key to lower case
 	if (key >= 'A' && key <= 'Z')
