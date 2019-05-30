@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "gl/glut.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
@@ -11,15 +11,53 @@ GLfloat ambientLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat diffuseLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specref[] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+struct
+{
+	double x = 0; // location
+	double y = 0.5;
+	double z = -10;
+	int rotate = 0; // 0-359
+	int rotateSpeed = 10;
+	const double eyesight = 1;
+	const double step = 0.5;
+} player;
+
+// room, start from (0, 0, 0), end at (room.size.x, room.size.y, room.size.z)
+const struct
+{
+	double size = 3;
+} room;
+
+double radians(double degree)
+{
+	return degree * 3.14 / 180;
+}
+
 // display callback function
 void render()
 {
 	// clear window with glClearColor
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	gluLookAt(
+			player.x,
+			player.y,
+			player.z,
+			player.x + sin(radians(player.rotate)) * player.eyesight,
+			player.y,
+			player.z + cos(radians(player.rotate)) * player.eyesight,
+			0, 1, 0);
+
+	// glutSolidCube(room.size);
+	glutWireCube(room.size);
+
 	// finish drawing
-	glFlush();
-	glFinish();
+	// glFlush(); // for network
+	// glFinish(); // for network
 	glutSwapBuffers(); // for double buffering
 }
 
@@ -68,12 +106,20 @@ void keyPressedEvent(unsigned char key, int x, int y)
 	switch (key)
 	{
 	case 'w':
+		player.z += cos(radians(player.rotate)) * player.step;
+		player.x += sin(radians(player.rotate)) * player.step;
 		break;
 	case 'a':
+		player.rotate += player.rotateSpeed;
+		player.rotate %= 360;
 		break;
 	case 's':
+		player.z -= cos(radians(player.rotate)) * player.step;
+		player.x -= sin(radians(player.rotate)) * player.step;
 		break;
 	case 'd':
+		player.rotate -= player.rotateSpeed;
+		player.rotate %= 360;
 		break;
 	default:
 		break;
@@ -83,14 +129,28 @@ void keyPressedEvent(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
+void reshape(int w, int h)
+{
+	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+
+	// set projection matrix
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(120, 1, 1.5, 100);
+
+	// set matrix mode back to model-view matrix
+	glMatrixMode(GL_MODELVIEW);
+}
+
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // use double buffer, rgb color mode, depth buffer
-	glutCreateWindow("simple-3D-room by DiscreteTom"); // window title
+	glutCreateWindow("simple-3D-room by DiscreteTom");				// window title
 
 	glutDisplayFunc(render);					 // set display callback function
+	glutReshapeFunc(reshape);					 // set reshape callback function
 	glutKeyboardFunc(keyPressedEvent); // set keyboard callback function(for ascii chars)
 
 	setupRC();
