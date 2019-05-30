@@ -20,6 +20,7 @@ void render()
 	// finish drawing
 	glFlush();
 	glFinish();
+	glutSwapBuffers(); // for double buffering
 }
 
 // setup rendering context
