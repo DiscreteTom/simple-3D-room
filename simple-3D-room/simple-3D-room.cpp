@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "gl/glut.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
@@ -52,6 +52,8 @@ void keyPressedEvent(char key, int x, int y)
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
+
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // use double buffer, rgb color mode, depth buffer
 	glutCreateWindow("simple-3D-room by DiscreteTom"); // window title
 
 	glutDisplayFunc(render);					 // set display callback function
