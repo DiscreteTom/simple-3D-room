@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "gl/glut.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
@@ -67,29 +67,29 @@ void setupRC()
 	glClearColor(1, 1, 1, 1); // white background
 
 	// Enable Depth Testing
-	glEnable(GL_DEPTH_TEST);
+	// glEnable(GL_DEPTH_TEST);
 
-	// Enable lighting
-	glEnable(GL_LIGHTING);
+	// // Enable lighting
+	// glEnable(GL_LIGHTING);
 
-	// Setup and enable light 0
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-	glEnable(GL_LIGHT0);
+	// // Setup and enable light 0
+	// glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+	// glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+	// glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+	// glEnable(GL_LIGHT0);
 
-	glShadeModel(GL_SMOOTH);
+	// glShadeModel(GL_SMOOTH);
 
-	// Enable color tracking
-	glEnable(GL_COLOR_MATERIAL);
+	// // Enable color tracking
+	// glEnable(GL_COLOR_MATERIAL);
 
-	// Set Material properties to follow glColor values
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	// // Set Material properties to follow glColor values
+	// glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-	// All materials hereafter have full specular reflectivity
-	// with a high shine
-	glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
-	glMateriali(GL_FRONT, GL_SHININESS, 128);
+	// // All materials hereafter have full specular reflectivity
+	// // with a high shine
+	// glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
+	// glMateriali(GL_FRONT, GL_SHININESS, 128);
 
 	// Set drawing color to blue
 	glColor3ub(0, 0, 255);
