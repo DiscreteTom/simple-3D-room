@@ -22,7 +22,6 @@ struct
 	const double step = 0.5;
 	const struct{
 		const double verticalRange = 120;
-		const double aspectRatio = 1;
 		const double nearDistance = 0.5;
 		const double farDistance = 100;
 	} eye;
@@ -141,7 +140,7 @@ void reshape(int w, int h)
 	// set projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(player.eye.verticalRange, player.eye.aspectRatio, player.eye.nearDistance, player.eye.farDistance);
+	gluPerspective(player.eye.verticalRange, (double)w/h, player.eye.nearDistance, player.eye.farDistance);
 
 	// set matrix mode back to model-view matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -152,6 +151,7 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // use double buffer, rgb color mode, depth buffer
+	glutInitWindowSize(1280, 720);
 	glutCreateWindow("simple-3D-room by DiscreteTom");				// window title
 
 	glutDisplayFunc(render);					 // set display callback function
