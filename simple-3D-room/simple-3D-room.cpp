@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "gl/glut.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
@@ -22,7 +22,7 @@ struct
 	int rotate = 0; // 0-359
 	const int rotateSpeed = 10;
 	const double step = 0.5;
-	const double jump = 0.5;
+	const double jump = 0.6;
 	const struct
 	{
 		const double verticalRange = 120;
@@ -30,12 +30,6 @@ struct
 		const double farDistance = 100;
 	} eye;
 } player;
-
-// room, start from (0, 0, 0), end at (room.size.x, room.size.y, room.size.z)
-const struct
-{
-	const double size = 3;
-} room;
 
 double radians(double degree)
 {
