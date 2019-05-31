@@ -20,7 +20,9 @@ struct
 	int rotate = 0; // 0-359
 	const int rotateSpeed = 10;
 	const double step = 0.5;
-	const struct{
+	const double jump = 0.5;
+	const struct
+	{
 		const double verticalRange = 120;
 		const double nearDistance = 0.5;
 		const double farDistance = 100;
@@ -124,6 +126,12 @@ void keyPressedEvent(unsigned char key, int x, int y)
 	case 'd':
 		player.rotate -= player.rotateSpeed;
 		player.rotate %= 360;
+		break;
+	case ' ':
+		player.y += player.jump;
+		break;
+	case 'c':
+		player.y -= player.jump;
 		break;
 	default:
 		break;
