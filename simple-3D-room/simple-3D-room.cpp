@@ -12,10 +12,12 @@ GLfloat diffuseLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specref[] = {1.0f, 1.0f, 1.0f, 1.0f};
 
+void buildRoom(); // from room.cpp
+
 struct
 {
 	double x = 0; // location
-	double y = 0.5;
+	double y = 1.8;
 	double z = -10;
 	int rotate = 0; // 0-359
 	const int rotateSpeed = 10;
@@ -49,6 +51,7 @@ void render()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	// set camera, must be called before drawing object
 	gluLookAt(
 			player.x,
 			player.y,
@@ -58,8 +61,7 @@ void render()
 			player.z + cos(radians(player.rotate)),
 			0, 1, 0);
 
-	// glutSolidCube(room.size);
-	glutWireCube(room.size);
+	buildRoom();
 
 	// finish drawing
 	// glFlush(); // for network
@@ -148,7 +150,7 @@ void reshape(int w, int h)
 	// set projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(player.eye.verticalRange, (double)w/h, player.eye.nearDistance, player.eye.farDistance);
+	gluPerspective(player.eye.verticalRange, (double)w / h, player.eye.nearDistance, player.eye.farDistance);
 
 	// set matrix mode back to model-view matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -160,7 +162,7 @@ int main(int argc, char **argv)
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // use double buffer, rgb color mode, depth buffer
 	glutInitWindowSize(1280, 720);
-	glutCreateWindow("simple-3D-room by DiscreteTom");				// window title
+	glutCreateWindow("simple-3D-room by DiscreteTom"); // window title
 
 	glutDisplayFunc(render);					 // set display callback function
 	glutReshapeFunc(reshape);					 // set reshape callback function
