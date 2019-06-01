@@ -1,9 +1,13 @@
 #include "gl/glut.h"
+#include <vector>
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
 #else
 #pragma comment(lib, "freeglut.lib")
 #endif
+
+double radians(double degree);
+void buildCylinder(double radius, double height, int slices, bool line);
 
 struct
 {
@@ -30,6 +34,11 @@ struct
 			double radius = 0.4;
 			double height = 1;
 		} cone;
+		struct
+		{
+			double radius = 0.5;
+			double height = 1;
+		} cylinder;
 	} table;
 } room;
 
@@ -85,4 +94,76 @@ void buildRoom()
 	glRotatef(90, -1, 0, 0);
 	glutWireCone(room.table.cone.radius, room.table.cone.height, 25, 25);
 	glPopMatrix();
+
+	// build cylinder
+	glPushMatrix();
+	glTranslated(room.table.centerX, room.table.centerY + room.table.lenY / 2 + room.table.cylinder.height / 2, room.table.centerZ);
+	buildCylinder(room.table.cylinder.radius, room.table.cylinder.height, 50, true);
+	glPopMatrix();
+
+	//
+	glPushMatrix();
+	glPopMatrix();
+
+	//
+	glPushMatrix();
+	glPopMatrix();
+
+	//
+	glPushMatrix();
+	glPopMatrix();
+
+	//
+	glPushMatrix();
+	glPopMatrix();
+}
+
+// build a cylinder, use (0, 0, 0) as center, Y as axis
+void buildCylinder(double radius, double height, int slices, bool line = false)
+{
+	// calculate x and y
+	std::vector<double> x;
+	std::vector<double> z;
+	for (int i = 0; i < slices; ++i)
+	{
+		x.push_back(radius * cos(radians(360 / slices * i)));
+		z.push_back(radius * sin(radians(360 / slices * i)));
+	}
+	// link head and tail
+	x.push_back(x[0]);
+	z.push_back(z[0]);
+
+	// build underside
+	if (line)
+		glBegin(GL_LINE_LOOP);
+	else
+		glBegin(GL_POLYGON);
+	for (int i = 0; i < slices; ++i)
+	{
+		glVertex3d(x[i], height / 2, z[i]);
+	}
+	glEnd();
+	if (line)
+		glBegin(GL_LINE_LOOP);
+	else
+		glBegin(GL_POLYGON);
+	for (int i = 0; i < slices; ++i)
+	{
+		glVertex3d(x[i], -height / 2, z[i]);
+	}
+	glEnd();
+
+	//build flank
+	for (int i = 0; i < slices; ++i)
+	{
+		if (line)
+			glBegin(GL_LINE_LOOP);
+		else
+			glBegin(GL_POLYGON);
+		glVertex3d(x[i], height / 2, z[i]);
+		glVertex3d(x[i + 1], height / 2, z[i + 1]);
+		glVertex3d(x[i + 1], -height / 2, z[i + 1]);
+		glVertex3d(x[i], -height / 2, z[i]);
+		glEnd();
+	}
 }
