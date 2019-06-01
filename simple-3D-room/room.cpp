@@ -7,8 +7,8 @@
 #endif
 
 double radians(double degree);
-void buildCylinder(double radius, double height, int slices, bool line);
-void buildPyramid(double bottomLength, double height, bool line);
+void buildCylinder(double radius, double height, int slices, bool line = false);
+void buildPyramid(double bottomLength, double height, bool line = false);
 
 // size data
 const struct
@@ -74,6 +74,82 @@ const GLdouble ctrlPoints[bzLinesNum][bzPointsNum][3] = {
 
 void buildRoom()
 {
+	// build outerline
+	glColor3ub(0, 0, 0);
+	glPushMatrix(); // save camera matrix
+	glTranslated(room.centerX, room.centerY, room.centerZ);
+	glScaled(room.lenX, room.lenY, room.lenZ);
+	glutWireCube(1);
+	glPopMatrix();
+
+	// build table
+	glColor3ub(243, 157, 47);
+	glPushMatrix();
+	glTranslated(room.table.centerX, room.table.centerY, room.table.centerZ);
+	glScaled(room.table.lenX, room.table.lenY, room.table.lenZ);
+	glutSolidCube(1);
+	glPopMatrix();
+
+	// build sphare
+	glColor3ub(255, 0, 0);
+	glPushMatrix();
+	glTranslated(room.table.centerX + 1, room.table.centerY + room.table.lenY / 2 + room.sphere.radius, room.table.centerZ);
+	glutSolidSphere(room.sphere.radius, 25, 25);
+	glPopMatrix();
+
+	// build cone
+	glColor3ub(0, 255, 0);
+	glPushMatrix();
+	glTranslated(room.table.centerX + 2, room.table.centerY + room.table.lenY / 2, room.table.centerZ);
+	glRotatef(90, -1, 0, 0);
+	glutSolidCone(room.cone.radius, room.cone.height, 25, 25);
+	glPopMatrix();
+
+	// build cylinder
+	glColor3ub(0, 0, 255);
+	glPushMatrix();
+	glTranslated(room.table.centerX, room.table.centerY + room.table.lenY / 2 + room.cylinder.height / 2, room.table.centerZ);
+	buildCylinder(room.cylinder.radius, room.cylinder.height, 50);
+	glPopMatrix();
+
+	// build pyramid
+	glColor3ub(255, 255, 0);
+	glPushMatrix();
+	glTranslated(room.table.centerX - 1, room.table.centerY + room.table.lenY / 2, room.table.centerZ);
+	buildPyramid(room.pyramid.bottomLength, room.cylinder.height);
+	glPopMatrix();
+
+	// build roof (bezier surface)
+	glPushMatrix();
+	glColor3ub(140, 81, 31);
+	glMap2d(													// define a two dimentional evaluator
+			GL_MAP2_VERTEX_3,							// target (result)
+			room.centerX - room.lenX / 2, // lower bound of x grid
+			room.centerX + room.lenX / 2, // upper bound of x grid
+			3,														// data invertal in x axis (equals to dimension of points)
+			bzPointsNum,								// x axis grid num
+			room.centerZ - room.lenZ / 2, // lower bound of z grid
+			room.centerZ + room.lenZ / 2, // upper bound of z grid
+			3 * bzPointsNum,							// data interval in z axis
+			bzLinesNum,								// z axis grid num
+			&ctrlPoints[0][0][0]);				// first item of data set
+	glEnable(GL_MAP2_VERTEX_3);				// enable evaluator
+	glMapGrid2d(roof.xGridNum, room.centerX - room.lenX / 2, room.centerX + room.lenX / 2, roof.zGridNum, room.centerZ - room.lenZ / 2, room.centerZ + room.lenZ / 2);
+	// glEvalMesh2(GL_LINE, 0, roof.xGridNum, 0, roof.zGridNum); // calculate grid
+	glEvalMesh2(GL_FILL, 0, roof.xGridNum, 0, roof.zGridNum); // calculate grid
+	glPopMatrix();
+
+	// draw bezier control points
+	glColor3ub(255, 0, 0);
+	glPointSize(10);
+	glPushMatrix();
+	glBegin(GL_POINTS);
+	for (int i = 0; i < bzLinesNum; ++i)
+		for (int j = 0; j < bzPointsNum; ++j)
+			glVertex3d(ctrlPoints[i][j][0], ctrlPoints[i][j][1], ctrlPoints[i][j][2]);
+	glEnd();
+	glPopMatrix();
+
 	// build coordinate axis
 	glPushMatrix();
 	glColor3ub(255, 0, 0);
@@ -93,82 +169,10 @@ void buildRoom()
 	glEnd();
 	glFlush();
 	glPopMatrix();
-
-	// build outerline
-	glColor3ub(0, 0, 0);
-	glPushMatrix(); // save camera matrix
-	glTranslated(room.centerX, room.centerY, room.centerZ);
-	glScaled(room.lenX, room.lenY, room.lenZ);
-	glutWireCube(1);
-	glPopMatrix();
-
-	// build table
-	glColor3ub(243, 157, 47);
-	glPushMatrix();
-	glTranslated(room.table.centerX, room.table.centerY, room.table.centerZ);
-	glScaled(room.table.lenX, room.table.lenY, room.table.lenZ);
-	// glutSolidCube(1);
-	glutWireCube(1);
-	glPopMatrix();
-
-	// build sphare
-	glColor3ub(0, 0, 0);
-	glPushMatrix();
-	glTranslated(room.table.centerX + 1, room.table.centerY + room.table.lenY / 2 + room.sphere.radius, room.table.centerZ);
-	glutWireSphere(room.sphere.radius, 25, 25);
-	glPopMatrix();
-
-	// build cone
-	glPushMatrix();
-	glTranslated(room.table.centerX + 2, room.table.centerY + room.table.lenY / 2, room.table.centerZ);
-	glRotatef(90, -1, 0, 0);
-	glutWireCone(room.cone.radius, room.cone.height, 25, 25);
-	glPopMatrix();
-
-	// build cylinder
-	glPushMatrix();
-	glTranslated(room.table.centerX, room.table.centerY + room.table.lenY / 2 + room.cylinder.height / 2, room.table.centerZ);
-	buildCylinder(room.cylinder.radius, room.cylinder.height, 50, true);
-	glPopMatrix();
-
-	// build pyramid
-	glPushMatrix();
-	glTranslated(room.table.centerX - 1, room.table.centerY + room.table.lenY / 2, room.table.centerZ);
-	buildPyramid(room.pyramid.bottomLength, room.cylinder.height, true);
-	glPopMatrix();
-
-	// build roof (bezier surface)
-	glPushMatrix();
-	glMap2d(													// define a two dimentional evaluator
-			GL_MAP2_VERTEX_3,							// target (result)
-			room.centerX - room.lenX / 2, // lower bound of x grid
-			room.centerX + room.lenX / 2, // upper bound of x grid
-			3,														// data invertal in x axis (equals to dimension of points)
-			bzPointsNum,								// x axis grid num
-			room.centerZ - room.lenZ / 2, // lower bound of z grid
-			room.centerZ + room.lenZ / 2, // upper bound of z grid
-			3 * bzPointsNum,							// data interval in z axis
-			bzLinesNum,								// z axis grid num
-			&ctrlPoints[0][0][0]);				// first item of data set
-	glEnable(GL_MAP2_VERTEX_3);				// enable evaluator
-	glMapGrid2d(roof.xGridNum, room.centerX - room.lenX / 2, room.centerX + room.lenX / 2, roof.zGridNum, room.centerZ - room.lenZ / 2, room.centerZ + room.lenZ / 2);
-	glEvalMesh2(GL_LINE, 0, roof.xGridNum, 0, roof.zGridNum); // calculate grid
-	glPopMatrix();
-
-	// draw bezier control points
-	glColor3ub(255, 0, 0);
-	glPointSize(10);
-	glPushMatrix();
-	glBegin(GL_POINTS);
-	for (int i = 0; i < bzLinesNum; ++i)
-		for (int j = 0; j < bzPointsNum; ++j)
-			glVertex3d(ctrlPoints[i][j][0], ctrlPoints[i][j][1], ctrlPoints[i][j][2]);
-	glEnd();
-	glPopMatrix();
 }
 
 // build a pyramid, use (0, 0, 0) as center of bottom, Y as axis
-void buildPyramid(double bottomLength, double height, bool line = false)
+void buildPyramid(double bottomLength, double height, bool line)
 {
 	double t = bottomLength / 2;
 	if (line)
@@ -209,7 +213,7 @@ void buildPyramid(double bottomLength, double height, bool line = false)
 }
 
 // build a cylinder, use (0, 0, 0) as center, Y as axis
-void buildCylinder(double radius, double height, int slices, bool line = false)
+void buildCylinder(double radius, double height, int slices, bool line)
 {
 	// calculate x and y
 	std::vector<double> x;
