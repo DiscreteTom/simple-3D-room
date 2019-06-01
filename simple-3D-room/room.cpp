@@ -25,21 +25,21 @@ struct
 		double centerX = 3;
 		double centerY = 0.6;
 		double centerZ = 5;
-		struct
-		{
-			double radius = 0.4;
-		} sphere;
-		struct
-		{
-			double radius = 0.4;
-			double height = 1;
-		} cone;
-		struct
-		{
-			double radius = 0.5;
-			double height = 1;
-		} cylinder;
 	} table;
+	struct
+	{
+		double radius = 0.4;
+	} sphere;
+	struct
+	{
+		double radius = 0.4;
+		double height = 1;
+	} cone;
+	struct
+	{
+		double radius = 0.5;
+		double height = 1;
+	} cylinder;
 } room;
 
 void buildRoom()
@@ -84,21 +84,21 @@ void buildRoom()
 	// build sphare
 	glColor3ub(0, 0, 0);
 	glPushMatrix();
-	glTranslated(room.table.centerX + 1, room.table.centerY + room.table.lenY / 2 + room.table.sphere.radius, room.table.centerZ);
-	glutWireSphere(room.table.sphere.radius, 25, 25);
+	glTranslated(room.table.centerX + 1, room.table.centerY + room.table.lenY / 2 + room.sphere.radius, room.table.centerZ);
+	glutWireSphere(room.sphere.radius, 25, 25);
 	glPopMatrix();
 
 	// build cone
 	glPushMatrix();
 	glTranslated(room.table.centerX + 2, room.table.centerY + room.table.lenY / 2, room.table.centerZ);
 	glRotatef(90, -1, 0, 0);
-	glutWireCone(room.table.cone.radius, room.table.cone.height, 25, 25);
+	glutWireCone(room.cone.radius, room.cone.height, 25, 25);
 	glPopMatrix();
 
 	// build cylinder
 	glPushMatrix();
-	glTranslated(room.table.centerX, room.table.centerY + room.table.lenY / 2 + room.table.cylinder.height / 2, room.table.centerZ);
-	buildCylinder(room.table.cylinder.radius, room.table.cylinder.height, 50, true);
+	glTranslated(room.table.centerX, room.table.centerY + room.table.lenY / 2 + room.cylinder.height / 2, room.table.centerZ);
+	buildCylinder(room.cylinder.radius, room.cylinder.height, 50, true);
 	glPopMatrix();
 
 	//
