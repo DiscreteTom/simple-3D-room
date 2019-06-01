@@ -10,7 +10,8 @@ double radians(double degree);
 void buildCylinder(double radius, double height, int slices, bool line);
 void buildPyramid(double bottomLength, double height, bool line);
 
-struct
+// size data
+const struct
 {
 	double lenX = 6;
 	double lenY = 3;
@@ -47,6 +48,29 @@ struct
 		double height = 1;
 	} pyramid;
 } room;
+
+// roof attributes
+const struct
+{
+	double height = 8;
+	int xGridNum = 20;
+	int zGridNum = 10;
+} roof;
+// bezier surface control points (for roof)
+const int bzPointsNum = 3;
+const int bzLinesNum = 3;
+const GLdouble ctrlPoints[bzLinesNum][bzPointsNum][3] = {
+		{{room.centerX - room.lenX / 2, room.lenY, room.centerZ + room.lenZ / 2},
+		 {room.centerX, room.lenY, room.centerZ + room.lenZ / 2},
+		 {room.centerX + room.lenX / 2, room.lenY, room.centerZ + room.lenZ / 2}},
+
+		{{room.centerX - room.lenX / 2, room.lenY, room.centerZ},
+		 {room.centerX, roof.height + room.lenY, room.centerZ},
+		 {room.centerX + room.lenX / 2, room.lenY, room.centerZ}},
+
+		{{room.centerX - room.lenX / 2, room.lenY, room.centerZ - room.lenZ / 2},
+		 {room.centerX, room.lenY, room.centerZ - room.lenZ / 2},
+		 {room.centerX + room.lenX / 2, room.lenY, room.centerZ - room.lenZ / 2}}};
 
 void buildRoom()
 {
@@ -113,16 +137,33 @@ void buildRoom()
 	buildPyramid(room.pyramid.bottomLength, room.cylinder.height, true);
 	glPopMatrix();
 
-	//
+	// build roof (bezier surface)
 	glPushMatrix();
+	glMap2d(													// define a two dimentional evaluator
+			GL_MAP2_VERTEX_3,							// target (result)
+			room.centerX - room.lenX / 2, // lower bound of x grid
+			room.centerX + room.lenX / 2, // upper bound of x grid
+			3,														// data invertal in x axis (equals to dimension of points)
+			bzPointsNum,								// x axis grid num
+			room.centerZ - room.lenZ / 2, // lower bound of z grid
+			room.centerZ + room.lenZ / 2, // upper bound of z grid
+			3 * bzPointsNum,							// data interval in z axis
+			bzLinesNum,								// z axis grid num
+			&ctrlPoints[0][0][0]);				// first item of data set
+	glEnable(GL_MAP2_VERTEX_3);				// enable evaluator
+	glMapGrid2d(roof.xGridNum, room.centerX - room.lenX / 2, room.centerX + room.lenX / 2, roof.zGridNum, room.centerZ - room.lenZ / 2, room.centerZ + room.lenZ / 2);
+	glEvalMesh2(GL_LINE, 0, roof.xGridNum, 0, roof.zGridNum); // calculate grid
 	glPopMatrix();
 
-	//
+	// draw bezier control points
+	glColor3ub(255, 0, 0);
+	glPointSize(10);
 	glPushMatrix();
-	glPopMatrix();
-
-	//
-	glPushMatrix();
+	glBegin(GL_POINTS);
+	for (int i = 0; i < bzLinesNum; ++i)
+		for (int j = 0; j < bzPointsNum; ++j)
+			glVertex3d(ctrlPoints[i][j][0], ctrlPoints[i][j][1], ctrlPoints[i][j][2]);
+	glEnd();
 	glPopMatrix();
 }
 
