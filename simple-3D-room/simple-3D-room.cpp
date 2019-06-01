@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "gl/glut.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
@@ -115,7 +115,7 @@ void keyPressedEvent(unsigned char key, int x, int y)
 		player.z += cos(radians(player.rotate)) * player.step;
 		player.x += sin(radians(player.rotate)) * player.step;
 		break;
-	case 'a':
+	case 'q':
 		player.rotate += player.rotateSpeed;
 		player.rotate %= 360;
 		break;
@@ -123,7 +123,7 @@ void keyPressedEvent(unsigned char key, int x, int y)
 		player.z -= cos(radians(player.rotate)) * player.step;
 		player.x -= sin(radians(player.rotate)) * player.step;
 		break;
-	case 'd':
+	case 'e':
 		player.rotate -= player.rotateSpeed;
 		player.rotate %= 360;
 		break;
@@ -132,6 +132,14 @@ void keyPressedEvent(unsigned char key, int x, int y)
 		break;
 	case 'c':
 		player.y -= player.jump;
+		break;
+	case 'a':
+	player.z += cos(radians(player.rotate + 90)) * player.step;
+	player.x += sin(radians(player.rotate + 90)) * player.step;
+		break;
+	case 'd':
+	player.z -= cos(radians(player.rotate + 90)) * player.step;
+	player.x -= sin(radians(player.rotate + 90)) * player.step;
 		break;
 	default:
 		break;
