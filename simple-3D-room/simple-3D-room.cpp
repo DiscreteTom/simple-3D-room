@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "gl/glut.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
@@ -68,8 +68,8 @@ void setupRC()
 {
 	glClearColor(1, 1, 1, 1); // white background
 
-	// Enable Depth Testing
-	// glEnable(GL_DEPTH_TEST);
+	// Enable Depth Testing, front objects will block hinder objects
+	glEnable(GL_DEPTH_TEST);
 
 	// // Enable lighting
 	// glEnable(GL_LIGHTING);
