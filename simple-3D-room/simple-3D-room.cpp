@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "gl/glut.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
@@ -7,10 +7,11 @@
 #endif
 
 // Light values and coordinates
-GLfloat ambientLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
-GLfloat diffuseLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat ambient[] = {0.8, 0.2, 0.2, 1};
+GLfloat diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-GLfloat specref[] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat light0Position[] = {3, 2, 1, 0};
+GLfloat specref[] = {3.0f, 3.0f, 3.0f, 3.0f};
 
 void buildRoom(); // from room.cpp
 
@@ -54,8 +55,10 @@ void render()
 			player.y,
 			player.z + cos(radians(player.rotate)),
 			0, 1, 0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 
 	buildRoom();
+
 
 	// finish drawing
 	// glFlush(); // for network
@@ -71,30 +74,31 @@ void setupRC()
 	// Enable Depth Testing, front objects will block hinder objects
 	glEnable(GL_DEPTH_TEST);
 
-	// // Enable lighting
-	// glEnable(GL_LIGHTING);
+	// Enable lighting
+	glEnable(GL_LIGHTING);
+	// setup global env light
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+	// set view point to local view point
+	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+	// setup double side light
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	// Setup and enable light 0
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+	glEnable(GL_LIGHT0);
+	// setup shade model
+	glShadeModel(GL_SMOOTH);
 
-	// // Setup and enable light 0
-	// glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-	// glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-	// glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
-	// glEnable(GL_LIGHT0);
+	// Set Material properties to follow glColor values
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
-	// glShadeModel(GL_SMOOTH);
-
-	// // Enable color tracking
-	// glEnable(GL_COLOR_MATERIAL);
-
-	// // Set Material properties to follow glColor values
-	// glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-
-	// // All materials hereafter have full specular reflectivity
-	// // with a high shine
-	// glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
-	// glMateriali(GL_FRONT, GL_SHININESS, 128);
-
-	// Set drawing color to blue
-	glColor3ub(0, 0, 255);
+	// Enable meterial
+	glEnable(GL_COLOR_MATERIAL);
+	// All materials hereafter have full specular reflectivity
+	// with a high shine
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
+	glMateriali(GL_FRONT, GL_SHININESS, 50);
 }
 
 // keyboard callback function(for ascii chars)
