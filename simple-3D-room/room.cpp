@@ -8,6 +8,7 @@
 
 double radians(double degree);
 void buildCylinder(double radius, double height, int slices, bool line);
+void buildPyramid(double bottomLength, double height, bool line);
 
 struct
 {
@@ -40,6 +41,11 @@ struct
 		double radius = 0.5;
 		double height = 1;
 	} cylinder;
+	struct
+	{
+		double bottomLength = 0.8;
+		double height = 1;
+	} pyramid;
 } room;
 
 void buildRoom()
@@ -101,8 +107,10 @@ void buildRoom()
 	buildCylinder(room.cylinder.radius, room.cylinder.height, 50, true);
 	glPopMatrix();
 
-	//
+	// build pyramid
 	glPushMatrix();
+	glTranslated(room.table.centerX - 1, room.table.centerY + room.table.lenY / 2, room.table.centerZ);
+	buildPyramid(room.pyramid.bottomLength, room.cylinder.height, true);
 	glPopMatrix();
 
 	//
@@ -116,6 +124,47 @@ void buildRoom()
 	//
 	glPushMatrix();
 	glPopMatrix();
+}
+
+// build a pyramid, use (0, 0, 0) as center of bottom, Y as axis
+void buildPyramid(double bottomLength, double height, bool line = false)
+{
+	double t = bottomLength / 2;
+	if (line)
+		glBegin(GL_LINE_LOOP);
+	else
+		glBegin(GL_POLYGON);
+	glVertex3d(0, height, 0);
+	glVertex3d(t, 0, t);
+	glVertex3d(t, 0, -t);
+	glEnd();
+
+	if (line)
+		glBegin(GL_LINE_LOOP);
+	else
+		glBegin(GL_POLYGON);
+	glVertex3d(0, height, 0);
+	glVertex3d(t, 0, -t);
+	glVertex3d(-t, 0, -t);
+	glEnd();
+
+	if (line)
+		glBegin(GL_LINE_LOOP);
+	else
+		glBegin(GL_POLYGON);
+	glVertex3d(0, height, 0);
+	glVertex3d(-t, 0, -t);
+	glVertex3d(-t, 0, t);
+	glEnd();
+
+	if (line)
+		glBegin(GL_LINE_LOOP);
+	else
+		glBegin(GL_POLYGON);
+	glVertex3d(0, height, 0);
+	glVertex3d(-t, 0, t);
+	glVertex3d(t, 0, t);
+	glEnd();
 }
 
 // build a cylinder, use (0, 0, 0) as center, Y as axis
