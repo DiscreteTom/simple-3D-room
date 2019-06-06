@@ -1,2 +1,7 @@
 .vs/
 Debug/
+SOIL.lib
+freeglut.dll
+freeglutd.dll
+freeglutd.lib
+freeglut.lib

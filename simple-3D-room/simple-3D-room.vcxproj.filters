@@ -23,5 +23,8 @@
     <ClCompile Include="simple-3D-room.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="room.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
