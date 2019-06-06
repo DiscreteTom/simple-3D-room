@@ -241,7 +241,7 @@ void buildCylinder(double radius, double height, int slices, bool line)
 		glBegin(GL_LINE_LOOP);
 	else
 		glBegin(GL_POLYGON);
-	for (int i = 0; i < slices; ++i)
+	for (int i = slices - 1; i >= 0; --i)
 	{
 		glVertex3d(x[i], -height / 2, z[i]);
 	}
@@ -254,10 +254,10 @@ void buildCylinder(double radius, double height, int slices, bool line)
 			glBegin(GL_LINE_LOOP);
 		else
 			glBegin(GL_POLYGON);
-		glVertex3d(x[i], height / 2, z[i]);
-		glVertex3d(x[i + 1], height / 2, z[i + 1]);
-		glVertex3d(x[i + 1], -height / 2, z[i + 1]);
 		glVertex3d(x[i], -height / 2, z[i]);
+		glVertex3d(x[i + 1], -height / 2, z[i + 1]);
+		glVertex3d(x[i + 1], height / 2, z[i + 1]);
+		glVertex3d(x[i], height / 2, z[i]);
 		glEnd();
 	}
 }
