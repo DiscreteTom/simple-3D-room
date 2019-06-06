@@ -1,10 +1,12 @@
 ﻿#include <iostream>
 #include "gl/glut.h"
+#include "soil/src/SOIL.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
 #else
 #pragma comment(lib, "freeglut.lib")
 #endif
+#pragma comment(lib, "SOIL.lib")
 
 // Light values and coordinates
 GLfloat globalAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f};
@@ -13,6 +15,9 @@ GLfloat diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat light0Position[] = {3.0f, 2.0f, 1.0f, 1.0f};
 GLfloat specref[] = {3.0f, 3.0f, 3.0f, 3.0f};
+
+// texture id
+GLuint tex;
 
 void buildRoom(); // from room.cpp
 
@@ -100,6 +105,23 @@ void setupRC()
 	// with a high shine
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specref);
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 50);
+
+	// enable texture
+	glEnable(GL_TEXTURE_2D);
+
+	// texture
+	glGenTextures(1, &tex); // generate one texture to &tex
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	int width, height;
+	unsigned char *img = SOIL_load_image("me.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+	SOIL_free_image_data(img);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // keyboard callback function(for ascii chars)
@@ -135,12 +157,12 @@ void keyPressedEvent(unsigned char key, int x, int y)
 		player.y -= player.jump;
 		break;
 	case 'a':
-	player.z += cos(radians(player.rotate + 90)) * player.step;
-	player.x += sin(radians(player.rotate + 90)) * player.step;
+		player.z += cos(radians(player.rotate + 90)) * player.step;
+		player.x += sin(radians(player.rotate + 90)) * player.step;
 		break;
 	case 'd':
-	player.z -= cos(radians(player.rotate + 90)) * player.step;
-	player.x -= sin(radians(player.rotate + 90)) * player.step;
+		player.z -= cos(radians(player.rotate + 90)) * player.step;
+		player.x -= sin(radians(player.rotate + 90)) * player.step;
 		break;
 	default:
 		break;

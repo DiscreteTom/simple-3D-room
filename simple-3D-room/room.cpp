@@ -72,6 +72,8 @@ const GLdouble ctrlPoints[bzLinesNum][bzPointsNum][3] = {
 		 {room.centerX, room.lenY, room.centerZ - room.lenZ / 2},
 		 {room.centerX + room.lenX / 2, room.lenY, room.centerZ - room.lenZ / 2}}};
 
+extern GLuint tex;
+
 void buildRoom()
 {
 	// build outerline
@@ -89,6 +91,28 @@ void buildRoom()
 	glScaled(room.table.lenX, room.table.lenY, room.table.lenZ);
 	glutSolidCube(1);
 	glPopMatrix();
+
+	// set table texture
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0, 0);
+	glVertex3d(room.table.centerX + room.table.lenX / 2,
+						 room.table.centerY - room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2 - 0.1); // left bottom
+	glTexCoord2f(0, room.table.lenY);
+	glVertex3d(room.table.centerX + room.table.lenX / 2,
+						 room.table.centerY + room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2 - 0.1); // left top
+	glTexCoord2f(room.table.lenX, room.table.lenY);
+	glVertex3d(room.table.centerX - room.table.lenX / 2,
+						 room.table.centerY + room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2 - 0.1); // right top
+	glTexCoord2f(room.table.lenX, 0);
+	glVertex3d(room.table.centerX - room.table.lenX / 2,
+						 room.table.centerY - room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2 - 0.1); // right bottom
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// build sphare
 	glColor3ub(255, 0, 0);
@@ -127,11 +151,11 @@ void buildRoom()
 			room.centerX - room.lenX / 2, // lower bound of x grid
 			room.centerX + room.lenX / 2, // upper bound of x grid
 			3,														// data invertal in x axis (equals to dimension of points)
-			bzPointsNum,								// x axis grid num
+			bzPointsNum,									// x axis grid num
 			room.centerZ - room.lenZ / 2, // lower bound of z grid
 			room.centerZ + room.lenZ / 2, // upper bound of z grid
 			3 * bzPointsNum,							// data interval in z axis
-			bzLinesNum,								// z axis grid num
+			bzLinesNum,										// z axis grid num
 			&ctrlPoints[0][0][0]);				// first item of data set
 	glEnable(GL_MAP2_VERTEX_3);				// enable evaluator
 	glMapGrid2d(roof.xGridNum, room.centerX - room.lenX / 2, room.centerX + room.lenX / 2, roof.zGridNum, room.centerZ - room.lenZ / 2, room.centerZ + room.lenZ / 2);
