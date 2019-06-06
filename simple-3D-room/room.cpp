@@ -9,6 +9,7 @@
 double radians(double degree);
 void buildCylinder(double radius, double height, int slices, bool line = false);
 void buildPyramid(double bottomLength, double height, bool line = false);
+void buildTable();
 
 // size data
 const struct
@@ -85,34 +86,7 @@ void buildRoom()
 	glPopMatrix();
 
 	// build table
-	glColor3ub(243, 157, 47);
-	glPushMatrix();
-	glTranslated(room.table.centerX, room.table.centerY, room.table.centerZ);
-	glScaled(room.table.lenX, room.table.lenY, room.table.lenZ);
-	glutSolidCube(1);
-	glPopMatrix();
-
-	// set table texture
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0, 0);
-	glVertex3d(room.table.centerX + room.table.lenX / 2,
-						 room.table.centerY - room.table.lenY / 2,
-						 room.table.centerZ - room.table.lenZ / 2 - 0.1); // left bottom
-	glTexCoord2f(0, room.table.lenY);
-	glVertex3d(room.table.centerX + room.table.lenX / 2,
-						 room.table.centerY + room.table.lenY / 2,
-						 room.table.centerZ - room.table.lenZ / 2 - 0.1); // left top
-	glTexCoord2f(room.table.lenX, room.table.lenY);
-	glVertex3d(room.table.centerX - room.table.lenX / 2,
-						 room.table.centerY + room.table.lenY / 2,
-						 room.table.centerZ - room.table.lenZ / 2 - 0.1); // right top
-	glTexCoord2f(room.table.lenX, 0);
-	glVertex3d(room.table.centerX - room.table.lenX / 2,
-						 room.table.centerY - room.table.lenY / 2,
-						 room.table.centerZ - room.table.lenZ / 2 - 0.1); // right bottom
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, 0);
+	buildTable();
 
 	// build sphare
 	glColor3ub(255, 0, 0);
@@ -193,6 +167,63 @@ void buildRoom()
 	glEnd();
 	glFlush();
 	glPopMatrix();
+}
+
+void buildTable()
+{
+	glColor3ub(243, 157, 47);
+	glPushMatrix();
+	glTranslated(room.table.centerX, room.table.centerY, room.table.centerZ);
+	glScaled(room.table.lenX, room.table.lenY, room.table.lenZ);
+	// glutSolidCube(1);
+	// draw 4 faces is enough
+	glBegin(GL_POLYGON);
+	glVertex3d(0.5, 0.5, 0.5);
+	glVertex3d(-0.5, 0.5, 0.5);
+	glVertex3d(-0.5, 0.5, -0.5);
+	glVertex3d(0.5, 0.5, -0.5);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glVertex3d(0.5, 0.5, 0.5);
+	glVertex3d(-0.5, 0.5, 0.5);
+	glVertex3d(-0.5, -0.5, 0.5);
+	glVertex3d(0.5, -0.5, 0.5);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glVertex3d(0.5, 0.5, 0.5);
+	glVertex3d(0.5, -0.5, 0.5);
+	glVertex3d(0.5, -0.5, -0.5);
+	glVertex3d(0.5, 0.5, -0.5);
+	glEnd();
+	glBegin(GL_POLYGON);
+	glVertex3d(-0.5, 0.5, 0.5);
+	glVertex3d(-0.5, -0.5, 0.5);
+	glVertex3d(-0.5, -0.5, -0.5);
+	glVertex3d(-0.5, 0.5, -0.5);
+	glEnd();
+	glPopMatrix();
+
+	// set table texture
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glBegin(GL_POLYGON);
+	glTexCoord2d(0, 0);
+	glVertex3d(room.table.centerX + room.table.lenX / 2,
+						 room.table.centerY - room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2); // left bottom
+	glTexCoord2d(0, room.table.lenY);
+	glVertex3d(room.table.centerX + room.table.lenX / 2,
+						 room.table.centerY + room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2); // left top
+	glTexCoord2d(room.table.lenX, room.table.lenY);
+	glVertex3d(room.table.centerX - room.table.lenX / 2,
+						 room.table.centerY + room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2); // right top
+	glTexCoord2d(room.table.lenX, 0);
+	glVertex3d(room.table.centerX - room.table.lenX / 2,
+						 room.table.centerY - room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2); // right bottom
+	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // build a pyramid, use (0, 0, 0) as center of bottom, Y as axis
