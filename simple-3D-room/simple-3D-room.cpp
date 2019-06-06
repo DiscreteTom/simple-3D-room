@@ -1,6 +1,6 @@
 ﻿#include <iostream>
 #include "gl/glut.h"
-#include "soil/src/SOIL.h"
+#include "soil/src/SOIL.h" // to load jpg texture
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
 #else
@@ -9,12 +9,15 @@
 #pragma comment(lib, "SOIL.lib")
 
 // Light values and coordinates
-GLfloat globalAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f};
+GLfloat globalAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f}; // RGBA
 GLfloat ambient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-GLfloat light0Position[] = {3.0f, 2.0f, 1.0f, 1.0f};
 GLfloat specref[] = {3.0f, 3.0f, 3.0f, 3.0f};
+// light position (x, y, z, w)
+// w=0 means the light is a directional source, ignore its position
+// otherwise take its position into consideration
+GLfloat light0Position[] = {3.0f, 2.0f, 1.0f, 1.0f};
 
 // texture id
 GLuint tex;
@@ -26,8 +29,8 @@ struct
 	double x = 0; // location
 	double y = 2;
 	double z = -10;
-	int rotate = 0; // 0-359
-	const int rotateSpeed = 10;
+	int rotate = 0; // 0-359 degree
+	const int rotateSpeed = 10; // degree
 	const double step = 0.5;
 	const double jump = 0.5;
 	const struct
@@ -49,10 +52,11 @@ void render()
 	// clear window with glClearColor
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// init model view matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	// set camera, must be called before drawing object
+	// set camera, must be called before drawing any object
 	gluLookAt(
 			player.x,
 			player.y,
@@ -62,6 +66,7 @@ void render()
 			player.z + cos(radians(player.rotate)),
 			0, 1, 0);
 
+	// move light, should be called after gluLookAt
 	glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 
 	buildRoom();
@@ -109,19 +114,19 @@ void setupRC()
 	// enable texture
 	glEnable(GL_TEXTURE_2D);
 
-	// texture
-	glGenTextures(1, &tex); // generate one texture to &tex
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// init texture
+	glGenTextures(1, &tex); // generate one texture id to &tex
+	glBindTexture(GL_TEXTURE_2D, tex); // operations to 2d texture after this will apply to tex
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // repeat texture if space is wider than texture
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // repeat texture if space is higher than texture
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	int width, height;
-	unsigned char *img = SOIL_load_image("me.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-	SOIL_free_image_data(img);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	unsigned char *img = SOIL_load_image("me.jpg", &width, &height, 0, SOIL_LOAD_RGB); // load image to memory
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img); // bind img to current 2d texture(aka: tex)
+	SOIL_free_image_data(img); // free img memory, texture will still be stored in memory
+	glBindTexture(GL_TEXTURE_2D, 0); // end operation about texture
 }
 
 // keyboard callback function(for ascii chars)
@@ -187,12 +192,15 @@ void reshape(int w, int h)
 
 int main(int argc, char **argv)
 {
+	// init env
 	glutInit(&argc, argv);
 
+	// init app
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // use double buffer, rgb color mode, depth buffer
 	glutInitWindowSize(1280, 720);
 	glutCreateWindow("simple-3D-room by DiscreteTom"); // window title
 
+	// register event
 	glutDisplayFunc(render);					 // set display callback function
 	glutReshapeFunc(reshape);					 // set reshape callback function
 	glutKeyboardFunc(keyPressedEvent); // set keyboard callback function(for ascii chars)

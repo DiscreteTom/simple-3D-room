@@ -11,7 +11,7 @@ void buildCylinder(double radius, double height, int slices, bool line = false);
 void buildPyramid(double bottomLength, double height, bool line = false);
 void buildTable();
 
-// size data
+// size and position data
 const struct
 {
 	double lenX = 6;
@@ -133,11 +133,11 @@ void buildRoom()
 			&ctrlPoints[0][0][0]);				// first item of data set
 	glEnable(GL_MAP2_VERTEX_3);				// enable evaluator
 	glMapGrid2d(roof.xGridNum, room.centerX - room.lenX / 2, room.centerX + room.lenX / 2, roof.zGridNum, room.centerZ - room.lenZ / 2, room.centerZ + room.lenZ / 2);
-	// glEvalMesh2(GL_LINE, 0, roof.xGridNum, 0, roof.zGridNum); // calculate grid
-	glEvalMesh2(GL_FILL, 0, roof.xGridNum, 0, roof.zGridNum); // calculate grid
+	// glEvalMesh2(GL_LINE, 0, roof.xGridNum, 0, roof.zGridNum); // calculate grid with line
+	glEvalMesh2(GL_FILL, 0, roof.xGridNum, 0, roof.zGridNum); // calculate grid with solid surface
 	glPopMatrix();
 
-	// draw bezier control points
+	// draw bezier control points for debug
 	glColor3ub(255, 0, 0);
 	glPointSize(10);
 	glPushMatrix();
@@ -148,7 +148,7 @@ void buildRoom()
 	glEnd();
 	glPopMatrix();
 
-	// build coordinate axis
+	// build coordinate axis for debug
 	glPushMatrix();
 	glColor3ub(255, 0, 0);
 	glBegin(GL_LINES);
@@ -203,8 +203,8 @@ void buildTable()
 	glEnd();
 	glPopMatrix();
 
-	// set table texture
-	glBindTexture(GL_TEXTURE_2D, tex);
+	// draw the front face with texture
+	glBindTexture(GL_TEXTURE_2D, tex); // enable texture
 	glBegin(GL_POLYGON);
 	glTexCoord2d(0, 0);
 	glVertex3d(room.table.centerX + room.table.lenX / 2,
@@ -223,7 +223,7 @@ void buildTable()
 						 room.table.centerY - room.table.lenY / 2,
 						 room.table.centerZ - room.table.lenZ / 2); // left bottom
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0); // disable texture
 }
 
 // build a pyramid, use (0, 0, 0) as center of bottom, Y as axis
