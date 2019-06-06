@@ -24,12 +24,12 @@ void buildRoom(); // from room.cpp
 struct
 {
 	double x = 0; // location
-	double y = 1.8;
+	double y = 2;
 	double z = -10;
 	int rotate = 0; // 0-359
 	const int rotateSpeed = 10;
 	const double step = 0.5;
-	const double jump = 0.6;
+	const double jump = 0.5;
 	const struct
 	{
 		const double verticalRange = 120;

@@ -22,10 +22,10 @@ const struct
 	struct
 	{
 		double lenX = 5;
-		double lenY = 1.2;
+		double lenY = 1;
 		double lenZ = 2;
 		double centerX = 3;
-		double centerY = 0.6;
+		double centerY = 0.5;
 		double centerZ = 5;
 	} table;
 	struct
