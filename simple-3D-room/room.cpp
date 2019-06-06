@@ -270,7 +270,7 @@ void buildPyramid(double bottomLength, double height, bool line)
 // build a cylinder, use (0, 0, 0) as center, Y as axis
 void buildCylinder(double radius, double height, int slices, bool line)
 {
-	// calculate x and y
+	// calculate x and z
 	std::vector<double> x;
 	std::vector<double> z;
 	for (int i = 0; i < slices; ++i)
