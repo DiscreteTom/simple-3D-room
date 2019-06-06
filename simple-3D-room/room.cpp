@@ -179,27 +179,27 @@ void buildPyramid(double bottomLength, double height, bool line)
 		glBegin(GL_LINE_LOOP);
 	else
 		glBegin(GL_POLYGON);
-	glVertex3d(0, height, 0);
+	glVertex3d(t, 0, -t);
 	glVertex3d(t, 0, t);
-	glVertex3d(t, 0, -t);
+	glVertex3d(0, height, 0);
 	glEnd();
 
 	if (line)
 		glBegin(GL_LINE_LOOP);
 	else
 		glBegin(GL_POLYGON);
-	glVertex3d(0, height, 0);
-	glVertex3d(t, 0, -t);
 	glVertex3d(-t, 0, -t);
+	glVertex3d(t, 0, -t);
+	glVertex3d(0, height, 0);
 	glEnd();
 
 	if (line)
 		glBegin(GL_LINE_LOOP);
 	else
 		glBegin(GL_POLYGON);
-	glVertex3d(0, height, 0);
-	glVertex3d(-t, 0, -t);
 	glVertex3d(-t, 0, t);
+	glVertex3d(-t, 0, -t);
+	glVertex3d(0, height, 0);
 	glEnd();
 
 	if (line)
