@@ -208,20 +208,20 @@ void buildTable()
 	glBegin(GL_POLYGON);
 	glTexCoord2d(0, 0);
 	glVertex3d(room.table.centerX + room.table.lenX / 2,
-						 room.table.centerY - room.table.lenY / 2,
-						 room.table.centerZ - room.table.lenZ / 2); // left bottom
-	glTexCoord2d(0, room.table.lenY);
-	glVertex3d(room.table.centerX + room.table.lenX / 2,
 						 room.table.centerY + room.table.lenY / 2,
 						 room.table.centerZ - room.table.lenZ / 2); // left top
-	glTexCoord2d(room.table.lenX, room.table.lenY);
+	glTexCoord2d(room.table.lenX, 0);
 	glVertex3d(room.table.centerX - room.table.lenX / 2,
 						 room.table.centerY + room.table.lenY / 2,
 						 room.table.centerZ - room.table.lenZ / 2); // right top
-	glTexCoord2d(room.table.lenX, 0);
+	glTexCoord2d(room.table.lenX, room.table.lenY);
 	glVertex3d(room.table.centerX - room.table.lenX / 2,
 						 room.table.centerY - room.table.lenY / 2,
 						 room.table.centerZ - room.table.lenZ / 2); // right bottom
+	glTexCoord2d(0, room.table.lenY);
+	glVertex3d(room.table.centerX + room.table.lenX / 2,
+						 room.table.centerY - room.table.lenY / 2,
+						 room.table.centerZ - room.table.lenZ / 2); // left bottom
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
