@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include "gl/glut.h"
 #ifdef _DEBUG
 #pragma comment(lib, "freeglutd.lib")
@@ -7,10 +7,11 @@
 #endif
 
 // Light values and coordinates
-GLfloat ambient[] = {0.8, 0.2, 0.2, 1};
+GLfloat globalAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f};
+GLfloat ambient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 GLfloat specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-GLfloat light0Position[] = {3, 2, 1, 0};
+GLfloat light0Position[] = {3.0f, 2.0f, 1.0f, 1.0f};
 GLfloat specref[] = {3.0f, 3.0f, 3.0f, 3.0f};
 
 void buildRoom(); // from room.cpp
@@ -55,10 +56,10 @@ void render()
 			player.y,
 			player.z + cos(radians(player.rotate)),
 			0, 1, 0);
+
 	glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 
 	buildRoom();
-
 
 	// finish drawing
 	// glFlush(); // for network
@@ -77,7 +78,7 @@ void setupRC()
 	// Enable lighting
 	glEnable(GL_LIGHTING);
 	// setup global env light
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
 	// set view point to local view point
 	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 	// setup double side light
@@ -91,14 +92,14 @@ void setupRC()
 	glShadeModel(GL_SMOOTH);
 
 	// Set Material properties to follow glColor values
-	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
 	// Enable meterial
 	glEnable(GL_COLOR_MATERIAL);
 	// All materials hereafter have full specular reflectivity
 	// with a high shine
-	glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
-	glMateriali(GL_FRONT, GL_SHININESS, 50);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specref);
+	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 50);
 }
 
 // keyboard callback function(for ascii chars)
